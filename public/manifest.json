@@ -1,0 +1,11 @@
+{
+  "id": "/index.html", "name": "My Life", "short_name": "My Life",
+  "description": "Your plans, and the day you actually lived.",
+  "start_url": "/index.html", "scope": "/", "display": "standalone",
+  "background_color": "#f8f5ed", "theme_color": "#f8f5ed",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

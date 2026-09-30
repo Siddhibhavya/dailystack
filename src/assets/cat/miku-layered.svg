@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="170" viewBox="0 0 220 170" fill="none" aria-labelledby="miku-title miku-description">
+  <title id="miku-title">Miku — original neutral master</title>
+  <desc id="miku-description">The existing My Life cat: cream-white loaf body, large angular-eared head, closed smiling eyes, pink cheeks and inner ears, strawberry bow, and thick curled tail. Transparent background. Exact source geometry with editable named groups; no redesigned shapes.</desc>
+  <!-- Explicit hero palette. All coordinates and stroke widths match CatCompanion.tsx. -->
+  <!-- Ear outlines belong to cat-head-contour; paw groups contain the existing paw division lines. -->
+  <g id="cat" stroke="#393A33">
+    <g id="cat-tail" data-pivot="163 126">
+      <path d="M163 126c47 12 40-51 23-36" stroke-width="10" stroke-linecap="round" />
+    </g>
+    <g id="cat-back-body" data-pivot="109 144">
+      <g id="cat-body">
+        <path d="M56 96c-17 18-14 46 7 48h83c30-5 30-41 10-54" fill="#FFFDF5" stroke-width="3" />
+      </g>
+    </g>
+    <g id="cat-head" data-pivot="109 121">
+      <path id="cat-head-contour" d="M57 73 52 29 85 49c15-7 35-7 51 0l32-20-4 44c10 40-20 52-55 52S46 108 57 73Z" fill="#FFFDF5" stroke-width="3" stroke-linejoin="round" />
+      <g id="cat-ear-left" data-pivot="68 62">
+        <path d="M62 45l3 18 13-8" stroke="#EFA5AC" stroke-width="4" stroke-linecap="round" />
+      </g>
+      <g id="cat-ear-right" data-pivot="154 62">
+        <path d="M150 55l10-10-2 19" stroke="#EFA5AC" stroke-width="4" stroke-linecap="round" />
+      </g>
+      <g id="cat-face" stroke-width="2.5" stroke-linecap="round">
+        <g id="cat-blush-left"><ellipse cx="75" cy="98" rx="8" ry="5" fill="#EFA5AC" stroke="none" /></g>
+        <g id="cat-blush-right"><ellipse cx="143" cy="98" rx="8" ry="5" fill="#EFA5AC" stroke="none" /></g>
+        <g id="cat-eye-left" data-pivot="85 87"><path d="M78 83q7 8 14 0" /></g>
+        <g id="cat-eye-right" data-pivot="134 87"><path d="M127 83q7 8 14 0" /></g>
+        <g id="cat-nose"><path d="M103 98l6 4 6-4" /></g>
+        <g id="cat-mouth" data-pivot="109 108"><path d="M109 102v7M109 108q-9 8-14 0M109 108q9 8 14 0" /></g>
+        <g id="cat-whiskers-left"><path d="M60 95l-22-4M60 101l-23 4" /></g>
+        <g id="cat-whiskers-right"><path d="M161 95l20-4M161 101l20 4" /></g>
+      </g>
+    </g>
+    <g id="cat-paw-left" data-pivot="84 132"><path d="M84 132v12" stroke-width="3" stroke-linecap="round" /></g>
+    <g id="cat-paw-right" data-pivot="128 132"><path d="M128 132v12" stroke-width="3" stroke-linecap="round" /></g>
+    <g id="cat-accessory-bow" data-pivot="109 128">
+      <path d="m99 124 10 4 10-4-2 10-8-4-8 4Z" fill="#DD5359" stroke="none" />
+    </g>
+    <g id="cat-optional-prop" />
+  </g>
+</svg>

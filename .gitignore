@@ -1,0 +1,11 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+.env
+.env.*
+!.env.example
+*.local
+backups/
+# User-supplied visual references stay local and outside application assets.
+/WhatsApp Image*.jpeg
