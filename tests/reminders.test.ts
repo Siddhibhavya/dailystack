@@ -1,0 +1,7 @@
+import 'fake-indexeddb/auto';
+import { expect, it, vi } from 'vitest';
+import { IndexedDbRepository } from '../src/data/indexedDb';
+import { metadata } from '../src/domain/models';
+import { leaveBy, ReminderScheduler } from '../src/services/reminders';
+it('calculates leave-by from confirmed minutes only', () => { expect(leaveBy('2026-09-30T10:00:00Z', 30)).toBe('2026-09-30T09:30:00.000Z'); expect(() => leaveBy('bad', 30)).toThrow(); expect(() => leaveBy('2026-09-30T10:00:00Z', -1)).toThrow(); });
+it('delivers due foreground reminders once across reload, not old reminders or denied permissions', async () => { const repo = await IndexedDbRepository.open(crypto.randomUUID()); const now = Date.now(); const show = vi.fn(async () => {}); const permission = vi.fn(async () => 'granted' as const); const provider = { permission, show, requestPermission: async () => true }; const r = { ...metadata(crypto.randomUUID()), title: 'Water check.', kind: 'water' as const, intensity: 'soft' as const, enabled: true, scheduledAt: new Date(now - 1000).toISOString() }; try { await repo.commit([{ table: 'reminders', value: r }, { table: 'reminders', value: { ...r, id: crypto.randomUUID(), scheduledAt: new Date(now - 16 * 60_000).toISOString() } }]); await new ReminderScheduler(repo, provider).tick(now); await new ReminderScheduler(repo, provider).tick(now); expect(show).toHaveBeenCalledTimes(1); await new ReminderScheduler(repo, { ...provider, permission: async () => 'denied' }).tick(now); expect(show).toHaveBeenCalledTimes(1); } finally { repo.close(); } });

@@ -113,6 +113,24 @@ export class CalendarService {
     if (status >= 500) return 'Google Calendar is temporarily unavailable. Try again later.';
     return `Calendar request failed (${status}). Try again.`;
   }
+  /** Independent live range read; never replaces Today or stores Calendar in Firestore. */
+  async readRange(from: string, through: string): Promise<CalendarCommitment[]> {
+    if (!this.valid()) throw new Error('Connect Calendar first.');
+    const start = new Date(`${from}T00:00:00`); const end = new Date(`${through}T00:00:00`); end.setDate(end.getDate() + 1);
+    if (!Number.isFinite(+start) || !Number.isFinite(+end) || end <= start || +end - +start > 33 * 86400_000) throw new Error('Choose a valid date range of up to 32 days.');
+    const generation = this.authGeneration; const token = this.token!; const events: CalendarCommitment[] = []; const seen = new Set<string>(); let page: string | undefined;
+    do {
+      const url = new URL('https://www.googleapis.com/calendar/v3/calendars/primary/events'); url.searchParams.set('timeMin', start.toISOString()); url.searchParams.set('timeMax', end.toISOString()); url.searchParams.set('singleEvents', 'true'); url.searchParams.set('orderBy', 'startTime'); if (page) url.searchParams.set('pageToken', page);
+      const response = await this.request(url, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+      if (generation !== this.authGeneration || !this.valid()) throw new Error('Calendar connection changed.');
+      if (response.status === 401) { this.clearSession(); throw new Error('Calendar session expired.'); }
+      if (!response.ok) throw new Error(this.failureMessage(response.status));
+      const data = await response.json() as { items?: GoogleEvent[]; nextPageToken?: string };
+      for (const event of data.items ?? []) { const plannedStart = event.start?.dateTime ?? event.start?.date; const plannedEnd = event.end?.dateTime ?? event.end?.date; if (event.status !== 'cancelled' && plannedStart && plannedEnd) events.push({ id: event.id, accountId: 'current-oauth-session', calendarId: 'primary', title: event.summary ?? 'Untitled event', plannedStart, plannedEnd, allDay: !event.start.dateTime }); }
+      page = data.nextPageToken; if (page && seen.has(page)) throw new Error('Calendar repeated a page.'); if (page) seen.add(page);
+    } while (page);
+    if (generation !== this.authGeneration || !this.valid()) throw new Error('Calendar connection changed.'); return events;
+  }
   async addTask(title: string, open: (url: string) => void = url => { window.open(url, '_blank', 'noopener'); }) {
     const { start, end } = nextHalfHourSlot();
     if (!this.valid()) { open(calendarTemplate(title, start, end)); return; }

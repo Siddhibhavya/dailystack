@@ -1,5 +1,9 @@
 # Firebase sync proposal — approval required
 
+Historical Phase 1 proposal. The locally implemented Phase 2 architecture and
+reviewable rules are now documented in [PHASE-2.md](PHASE-2.md). Its production
+publication remains pending. The text below records the original proposal.
+
 This is documentation only. No Firebase SDK, Auth configuration, Firestore database,
 rules deployment or Hosting configuration change has been added. The current project
 binding remains untouched. Existing Google Calendar OAuth is a separate integration.

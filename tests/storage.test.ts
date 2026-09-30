@@ -48,7 +48,7 @@ describe('versioned localStorage migration', () => {
   });
   it('can retry after a save failure without touching legacy data', async () => {
     seed(); const original = captureLegacy(storage);
-    const failing: Repository = { get: repo.get.bind(repo), list: repo.list.bind(repo), commit: repo.commit.bind(repo), commitTimer: repo.commitTimer.bind(repo), commitOnce: async () => { throw new Error('disk full'); } };
+    const failing: Repository = { get: repo.get.bind(repo), list: repo.list.bind(repo), commit: repo.commit.bind(repo), commitTimer: repo.commitTimer.bind(repo), compareAndCommit: repo.compareAndCommit.bind(repo), commitOnce: async () => { throw new Error('disk full'); } };
     await expect(migrateLegacy(failing, original, life.deviceId)).rejects.toThrow('disk full');
     expect(await repo.list('tasks')).toHaveLength(0); expect(values.get(TASKS_KEY)).toBe(original.tasksRaw);
     await life.migrate(); expect(await repo.list('tasks')).toHaveLength(2);

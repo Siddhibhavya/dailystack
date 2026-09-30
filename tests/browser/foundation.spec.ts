@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixture';
 const layouts = [
   { name: 'mobile-portrait', width: 390, height: 844 },
   { name: 'tablet-portrait', width: 768, height: 1024 },

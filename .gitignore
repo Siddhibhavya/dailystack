@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.firebase/
 test-results/
 playwright-report/
 .env
@@ -9,3 +10,5 @@ playwright-report/
 backups/
 # User-supplied visual references stay local and outside application assets.
 /WhatsApp Image*.jpeg
+*-debug.log
+*-debug.*.log

@@ -13,7 +13,7 @@ function worker() {
 }
 function request(url: string, authorization = false, mode = 'cors') { return { url, method: 'GET', headers: new Headers(authorization ? { Authorization: 'Bearer test' } : {}), mode }; }
 describe('service worker privacy and offline shell', () => {
-  it.each(['https://www.googleapis.com/calendar/v3/calendars/primary/events', 'https://accounts.google.com/gsi/client', 'https://other.test/public', 'https://my-life.test/oauth/token', 'https://my-life.test/?access_token=test'])('never intercepts %s', url => {
+  it.each(['https://www.googleapis.com/calendar/v3/calendars/primary/events', 'https://accounts.google.com/gsi/client', 'https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel', 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp', 'https://securetoken.googleapis.com/v1/token', 'https://my-life.test/__/auth/handler', 'https://other.test/public', 'https://my-life.test/oauth/token', 'https://my-life.test/?access_token=test'])('never intercepts %s', url => {
     const { listeners, caches } = worker(); const respondWith = vi.fn(); listeners.get('fetch')!({ request: request(url), respondWith });
     expect(respondWith).not.toHaveBeenCalled(); expect(caches.open).not.toHaveBeenCalled();
   });

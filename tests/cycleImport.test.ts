@@ -1,0 +1,4 @@
+import { expect, it } from 'vitest';
+import { previewCycleImport, validDay, validateCycle } from '../src/services/cycleImport';
+it('validates dates without imposing a 28-day cycle or discarding irregularity', () => { expect(validDay('2026-02-30')).toBe(false); expect(validDay('2024-02-29')).toBe(true); expect(validateCycle({ periodStart: '2026-09-01', periodEnd: '2026-08-30', notes: '', symptoms: [], flow: [] })).toBe(false); const p = previewCycleImport(JSON.stringify([{ periodStart: '2026-01-01' }, { periodStart: '2026-03-02' }, { periodStart: '2026-02-30' }, { periodStart: '2026-01-01' }])); expect(p.detected).toBe(4); expect(p.valid).toHaveLength(2); expect(p.rejected).toEqual([3, 4]); expect(p.to).toBe('2026-03-02'); });
+it('rejects unsupported import formats', () => { expect(() => previewCycleImport('{}')).toThrow('array'); expect(() => previewCycleImport('not JSON')).toThrow(); });

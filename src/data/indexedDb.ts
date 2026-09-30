@@ -1,6 +1,6 @@
 import { TABLES, type Table, type Tables } from '../domain/models';
-import type { Repository, Write } from './repository';
-export const DATABASE_VERSION = 1;
+import type { Repository, Write, ExpectedRecord } from './repository';
+export const DATABASE_VERSION = 2;
 export class IndexedDbRepository implements Repository {
   private constructor(private readonly db: IDBDatabase) {}
   static open(name = 'my-life'): Promise<IndexedDbRepository> {
@@ -10,7 +10,7 @@ export class IndexedDbRepository implements Repository {
         for (const table of TABLES) {
           if (!request.result.objectStoreNames.contains(table)) {
             const store = request.result.createObjectStore(table, { keyPath: 'id' });
-            if (table !== 'meta' && table !== 'backups') {
+            if (table !== 'meta' && table !== 'backups' && table !== 'photos') {
               store.createIndex('updatedAt', 'updatedAt');
               store.createIndex('syncStatus', 'syncStatus');
             }
@@ -75,4 +75,23 @@ export class IndexedDbRepository implements Repository {
     });
   }
   commitTimer(writes: Write[], expected: string | null) { return this.write(writes, expected); }
+  compareAndCommit(writes: Write[], expected: ExpectedRecord[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const stores = [...new Set([...writes.map(w => w.table), ...expected.map(e => e.table)])];
+      if (!stores.length) { resolve(true); return; }
+      const tx = this.db.transaction(stores, 'readwrite');
+      let remaining = expected.length;
+      let applied = false;
+      let equal = true;
+      const put = () => { if (!equal) return; for (const w of writes) tx.objectStore(w.table).put(w.value); applied = true; };
+      if (!remaining) put();
+      for (const e of expected) {
+        const request = tx.objectStore(e.table).get(e.id);
+        request.onsuccess = () => { if (JSON.stringify(request.result) !== JSON.stringify(e.value)) equal = false; if (--remaining === 0) put(); };
+      }
+      tx.oncomplete = () => resolve(applied);
+      tx.onabort = () => reject(new Error('Local reconciliation failed. Previous data is preserved.'));
+      tx.onerror = () => reject(tx.error);
+    });
+  }
 }
